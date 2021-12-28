@@ -24,6 +24,18 @@ func main() {
 	for i, board := range bingoBoards {
 		markBoard(&board, draws[i])
 		fmt.Printf("Playing Board %d", i)
+
+		for i, number := range draws {
+			markBoard(&board, number)
+			if i > 4 {
+
+				if checkWin(&board) {
+					board.calculateScore()
+					fmt.Printf("\nScore: %d \nTurns: %d", board.score, board.numberOfTurns)
+					break
+				}
+			}
+		}
 	}
 
 	fmt.Println(len(draws))
@@ -54,4 +66,32 @@ func markBoard(b *bingoBoard, draw int) {
 			b.numberOfTurns++
 		}
 	}
+}
+
+func checkWin(b *bingoBoard) bool {
+	// Check if a row has been completed
+	for i := 0; i < 5; i++ {
+		if b.board[i*5] < 0 && b.board[i*5+1] < 0 && b.board[i*5+2] < 0 && b.board[i*5+3] < 0 && b.board[i*5+4] < 0 {
+			return true
+		}
+	}
+
+	// Check if a column has been completed
+	for i := 0; i < 5; i++ {
+		if b.board[i] < 0 && b.board[i+5] < 0 && b.board[i+10] < 0 && b.board[i+15] < 0 && b.board[i+20] < 0 {
+			return true
+		}
+	}
+
+	// Check if the left diagonal has been completed
+	if b.board[0] < 0 && b.board[6] < 0 && b.board[12] < 0 && b.board[18] < 0 && b.board[24] < 0 {
+		return true
+	}
+
+	// Check if the right diagonal has been completed
+	if b.board[4] < 0 && b.board[8] < 0 && b.board[12] < 0 && b.board[16] < 0 && b.board[20] < 0 {
+		return true
+	}
+
+	return false
 }
